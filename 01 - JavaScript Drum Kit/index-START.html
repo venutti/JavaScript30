@@ -59,6 +59,29 @@
 
 <script>
 
+  function playSound(e) {
+    const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`)
+    const key = document.querySelector(`.key[data-key="${e.keyCode}"]`)
+    if(!audio) return; // stop the function from running all together
+    audio.currentTime = 0; // reinicia el audio, para que se pueda volver a reproducir cuando esté reproduciendose
+    audio.play();
+    key.classList.add("playing");
+  };
+
+  function removeTransition(e) {
+    if(e.propertyName !== "transform") return; // sino, actua con todas las propiedades que cambiaron
+    this.classList.remove("playing"); // this refiere al elemento que llamó a esta callback --> .key
+  }
+
+  window.addEventListener('keydown', playSound);
+
+  const keys = document.querySelectorAll(".key");
+  /*transitionend se lanza cuando una transición se complete
+  en este caso, como la transición afecta a todas las propiedades,
+    transition: ALL 0.7
+  se va a lanzar por cada propiedad transicionada
+  y para evitar eso, en la callbackFunction hacemos que actue con una propiedad específica*/
+  keys.forEach(key => key.addEventListener("transitionend", removeTransition));
 </script>
 
 
